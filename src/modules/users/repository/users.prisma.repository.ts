@@ -9,6 +9,7 @@ import { plainToInstance } from 'class-transformer';
 @Injectable()
 export class UserPrismaRepository implements UsersRepository {
   constructor(private prisma: PrismaService) {}
+
   async create(payload: CreateUserDto): Promise<User> {
     const user = new User();
     Object.assign(user, payload);

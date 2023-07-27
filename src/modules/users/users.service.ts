@@ -9,25 +9,23 @@ import { UsersRepository } from './repository/users.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(private userRepository: UsersRepository) {}
+  constructor(private repository: UsersRepository) {}
   async create(data: CreateUserDto) {
-    const usernameExists = await this.userRepository.findByUsername(
-      data.username,
-    );
+    const usernameExists = await this.repository.findByUsername(data.username);
 
     if (usernameExists)
       throw new ConflictException({ username: 'Username already exists.' });
 
-    const emailExists = await this.userRepository.findByEmail(data.email);
+    const emailExists = await this.repository.findByEmail(data.email);
 
     if (emailExists)
       throw new ConflictException({ email: 'Email already exists' });
 
-    return await this.userRepository.create(data);
+    return await this.repository.create(data);
   }
 
   async findAll() {
-    return await this.userRepository.findAll();
+    return await this.repository.findAll();
   }
 
   async findByUser(credential: string) {
@@ -35,8 +33,8 @@ export class UsersService {
       /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
     const isEmail = emailRegex.test(credential);
     const user = isEmail
-      ? await this.userRepository.logByEmail(credential)
-      : await this.userRepository.logByUsername(credential);
+      ? await this.repository.logByEmail(credential)
+      : await this.repository.logByUsername(credential);
 
     if (!user) {
       throw new NotFoundException('User does not exists.');
@@ -46,7 +44,7 @@ export class UsersService {
   }
 
   async findOne(id: number) {
-    const user = await this.userRepository.find(id);
+    const user = await this.repository.find(id);
 
     if (!user) {
       throw new NotFoundException('User does not exists.');
@@ -56,7 +54,7 @@ export class UsersService {
   }
 
   async update(id: number, data: UpdateUserDto) {
-    const user = await this.userRepository.update(id, data);
+    const user = await this.repository.update(id, data);
 
     if (!user) {
       throw new NotFoundException('User does not exists.');
@@ -66,12 +64,12 @@ export class UsersService {
   }
 
   async remove(id: number) {
-    const user = await this.userRepository.find(id);
+    const user = await this.repository.find(id);
 
     if (!user) {
       throw new NotFoundException('User does not exists.');
     }
 
-    return await this.userRepository.delete(id);
+    return await this.repository.delete(id);
   }
 }

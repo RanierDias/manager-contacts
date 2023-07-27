@@ -25,25 +25,14 @@ export class UsersController {
     return this.usersService.create(createUserDto);
   }
 
-  @UseInterceptors(ClassSerializerInterceptor)
-  @Get()
   @UseGuards(JWTAuthGuard)
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @UseInterceptors(ClassSerializerInterceptor)
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(Number(id));
-  }
-
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.usersService.update(Number(id), updateUserDto);
   }
 
+  @UseGuards(JWTAuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   remove(@Param('id') id: string) {
