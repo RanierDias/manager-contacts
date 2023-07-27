@@ -12,6 +12,7 @@ async function startServer() {
       transformOptions: { groups: ['transform'] },
     }),
   );
+
   await app.listen(3000);
 }
 
