@@ -27,9 +27,13 @@ export class UserPrismaRepository implements UsersRepository {
     return plainToInstance(User, users);
   }
 
-  async findByUsername(username: string): Promise<User> {
-    const user: User = await this.prisma.user.findUnique({
-      where: { username },
+  async findByUser(
+    username: string,
+    email: string,
+    phone: string,
+  ): Promise<User> {
+    const user: User = await this.prisma.user.findFirst({
+      where: { OR: [{ username }, { email }, { phone }] },
     });
 
     return plainToInstance(User, user);
@@ -41,14 +45,6 @@ export class UserPrismaRepository implements UsersRepository {
     });
 
     return user;
-  }
-
-  async findByEmail(email: string): Promise<User> {
-    const user: User = await this.prisma.user.findUnique({
-      where: { email },
-    });
-
-    return plainToInstance(User, user);
   }
 
   async logByEmail(email: string): Promise<User> {

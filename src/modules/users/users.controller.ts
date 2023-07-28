@@ -9,6 +9,7 @@ import {
   UseInterceptors,
   ClassSerializerInterceptor,
   UseGuards,
+  Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -28,14 +29,22 @@ export class UsersController {
   @UseGuards(JWTAuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(Number(id), updateUserDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+    @Request() req,
+  ) {
+    const userId = Number(req.user.id);
+
+    return this.usersService.update(Number(id), updateUserDto, userId);
   }
 
   @UseGuards(JWTAuthGuard)
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(Number(id));
+  remove(@Param('id') id: string, @Request() req) {
+    const userId = Number(req.user.id);
+
+    return this.usersService.remove(Number(id), userId);
   }
 }
