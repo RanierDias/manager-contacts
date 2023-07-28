@@ -8,24 +8,27 @@ datasource db {
 }
 
 model User {
-  id        Int               @id @default(autoincrement())
-  username  String            @unique
-  fullname  String
-  email     String            @unique
-  phone     String            @unique
-  password  String
-  createdAt DateTime          @default(now())
-  clients   ContactsOfUsers[]
+  id            Int               @id @default(autoincrement())
+  username      String            @unique
+  fullname      String
+  email         String            @unique
+  phone         String            @unique
+  password      String
+  createdAt     DateTime          @default(now())
+  clients       ContactsOfUsers[]
+  contactsAdded Contact[]
 
   @@map("users")
 }
 
 model Contact {
-  id       Int               @id @default(autoincrement())
-  fullname String
-  email    String            @unique
-  phone    String            @unique
-  sellers  ContactsOfUsers[]
+  id        Int               @id @default(autoincrement())
+  fullname  String
+  email     String?           @unique
+  phone     String            @unique
+  createdBy Int
+  addedBy   User              @relation(fields: [createdBy], references: [id])
+  sellers   ContactsOfUsers[]
 
   @@map("contacts")
 }
