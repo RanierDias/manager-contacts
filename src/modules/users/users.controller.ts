@@ -12,21 +12,40 @@ import {
   Request,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, CreateUserRes } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JWTAuthGuard } from '../auth/jwt-auth.guard';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('Usuários')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
+  @ApiCreatedResponse({
+    description: 'Caso der certo a requisição',
+    type: CreateUserRes,
+  })
+  @ApiResponse({ status: 400, description: 'Caso mande um campo inválido' })
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @UseGuards(JWTAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({
+    status: 200,
+    description: 'Caso a requisição der certo',
+    type: CreateUserRes,
+  })
+  @ApiResponse({ status: 404, description: 'Caso o usuário não existir' })
   @UseInterceptors(ClassSerializerInterceptor)
   @Patch(':id')
   update(
@@ -40,6 +59,9 @@ export class UsersController {
   }
 
   @UseGuards(JWTAuthGuard)
+  @ApiBearerAuth()
+  @ApiResponse({ status: 204, description: 'Caso a requisição der certo' })
+  @ApiResponse({ status: 404, description: 'Caso o usuário não existir' })
   @UseInterceptors(ClassSerializerInterceptor)
   @Delete(':id')
   remove(@Param('id') id: string, @Request() req) {
