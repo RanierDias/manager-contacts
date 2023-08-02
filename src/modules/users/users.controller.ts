@@ -39,6 +39,18 @@ export class UsersController {
   }
 
   @UseGuards(JWTAuthGuard)
+  @UseInterceptors(ClassSerializerInterceptor)
+  @ApiCreatedResponse({
+    description: 'Caso der certo a requisição',
+    type: CreateUserRes,
+  })
+  @ApiResponse({ status: 404, description: 'Caso o usuário não existir' })
+  @Get(':id')
+  get(@Param('id') id: string) {
+    return this.usersService.findOne(Number(id));
+  }
+
+  @UseGuards(JWTAuthGuard)
   @ApiBearerAuth()
   @ApiResponse({
     status: 200,
