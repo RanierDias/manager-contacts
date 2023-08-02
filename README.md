@@ -8,6 +8,16 @@ Este é um projeto MVP para gerenciamento de contatos, é uma api simples com du
 $ npm install
 ```
 
+## Inicialização do banco de dados
+
+```bash
+# only development
+$ npx prisma migrate dev
+
+# only production
+$ npx prisma migrate deploy
+```
+
 ## Iniciar servidor
 
 ```bash
